@@ -44,4 +44,5 @@ This setup ensures that the screen temperature is dynamically adjusted based on 
 
 
 Includes a menu tray icon and a slider to setup a custom screen resolution
+
 ![alt text](menuitem.png)
