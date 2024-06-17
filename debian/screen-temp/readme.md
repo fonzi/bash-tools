@@ -41,3 +41,7 @@ If you want to run the script manually, open a terminal and execute:
 
 ```/path/to/night_screen.sh &```
 This setup ensures that the screen temperature is dynamically adjusted based on the current time and the sunrise and sunset times for your location. The script will run in the background and update the screen temperature every hour.
+
+
+Includes a menu tray icon and a slider to setup a custom screen resolution
+![alt text](menuitem.png)
