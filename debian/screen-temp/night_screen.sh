@@ -62,7 +62,7 @@ show_about() {
     current_temp=$(xsct | grep -oP '(?<=temperature ~ )\d+')
     new_temp=$(yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100 \
                    --title="About Screen Temperature Adjuster" \
-                   --text="Created by Fonzi Vazquez\nLatitude: $LAT\nLongitude: $LNG\nhttps://fonzi.xyz")
+                   --text="Created by Fonzi Vazquez\nLatitude: $LAT\nLongitude: $LNG\nhttps://fonzi.xyz\n GPL-3.0 license")
     if [ $? -eq 0 ]; then
         xsct $new_temp
     fi
