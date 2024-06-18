@@ -7,7 +7,7 @@ API_URL="https://api.sunrise-sunset.org/json?lat=$LAT&lng=$LNG&formatted=0"
 
 # Function to get sunrise and sunset times and convert to local time
 get_sun_times() {
-	echo "url:" $API_URL
+    echo "url:" $API_URL
     response=$(curl -s "$API_URL")
     SUNRISE_UTC=$(echo $response | jq -r '.results.sunrise')
     SUNSET_UTC=$(echo $response | jq -r '.results.sunset')
@@ -42,6 +42,7 @@ set_screen_temp() {
     xsct $temp
     echo "set temperature to:" $temp
 }
+
 # Function to handle cleanup on exit
 cleanup() {
     xsct 6500  # Reset screen temperature to 6500
@@ -57,19 +58,25 @@ trap cleanup SIGINT SIGTERM
 # Initial fetch of sunrise and sunset times
 get_sun_times
 
-# Function to display the About message with a slider
+# Function to display the About message with a slider and Quit option
 show_about() {
     current_temp=$(xsct | grep -oP '(?<=temperature ~ )\d+')
-    new_temp=$(yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100 \
-                   --title="About Screen Temperature Adjuster" \
-                   --text="Created by Fonzi Vazquez\nLatitude: $LAT\nLongitude: $LNG\nhttps://fonzi.xyz\n GPL-3.0 license")
-    if [ $? -eq 0 ]; then
+    yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100 \
+        --title="About Screen Temperature Adjuster" \
+        --text="Created by Fonzi Vazquez\nLatitude: $LAT\nLongitude: $LNG\nhttps://fonzi.xyz\nGPL-3.0 license" \
+        --button="Set:0" --button="Quit:1"
+    
+    response=$?
+    if [ $response -eq 0 ]; then
+        new_temp=$(yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100)
         xsct $new_temp
+    elif [ $response -eq 1 ]; then
+        cleanup
     fi
 }
 
 # Export function and variables to make them available to subshells
-export -f show_about
+export -f show_about cleanup
 export LAT
 export LNG
 export SUNRISE
@@ -83,7 +90,7 @@ YAD_PID=$!
 while true; do
     set_screen_temp
 
-    sleep 3600  # Sleep for 2 hours
+    sleep 3600  # Sleep for 1 hour
 
     # Update sunrise and sunset times every 2 hours
     get_sun_times
