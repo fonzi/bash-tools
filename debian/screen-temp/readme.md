@@ -46,3 +46,35 @@ This setup ensures that the screen temperature is dynamically adjusted based on 
 Includes a menu tray icon and a slider to setup a custom screen resolution
 
 ![alt text](menuitem.png)
+
+
+## Rought time table on my locale as of 2024-06-17
+| Time       | xsct Value (Kelvin)      | Description                                   | Note                                           |
+|------------|--------------------------|-----------------------------------------------|------------------------------------------------|
+| 4:00 AM    | 2500                     | Two hours before sunrise, start increasing    | Actual time might shift due to API call        |
+| 5:00 AM    | 4500                     | Gradually increasing                          | Actual time might shift due to API call        |
+| 6:00 AM    | 6500                     | Sunrise, highest temperature                  | Actual time might shift due to API call        |
+| 7:00 AM    | 6500                     |                                               | Actual time might shift due to API call        |
+| 8:00 AM    | 6500                     |                                               |                                                |
+| 9:00 AM    | 6500                     |                                               |                                                |
+| 10:00 AM   | 6500                     |                                               |                                                |
+| 11:00 AM   | 6500                     |                                               |                                                |
+| 12:00 PM   | 6500                     | Noon, highest temperature                     |                                                |
+| 1:00 PM    | 6000                     | Gradually decreasing                          |                                                |
+| 2:00 PM    | 5500                     |                                               |                                                |
+| 3:00 PM    | 5000                     |                                               |                                                |
+| 4:00 PM    | 4500                     |                                               |                                                |
+| 5:00 PM    | 4000                     |                                               |                                                |
+| 6:00 PM    | 3500                     |                                               |                                                |
+| 7:00 PM    | 3000                     |                                               |                                                |
+| 8:00 PM    | 2500                     | Sunset, lowest temperature                    | Actual time might shift due to API call        |
+| 9:00 PM    | 2500                     | Evening, lowest temperature                   |                                                |
+| 10:00 PM   | 2500                     |                                               |                                                |
+| 11:00 PM   | 2500                     |                                               |                                                |
+| 12:00 AM   | 2500                     |                                               |                                                |
+| 1:00 AM    | 2500                     |                                               |                                                |
+| 2:00 AM    | 2500                     |                                               |                                                |
+| 3:00 AM    | 2500                     |                                               |                                                |
+| 4:00 AM    | 2500                     | Two hours before sunrise, start increasing    | Actual time might shift due to API call        |
+| 5:00 AM    | 4500                     | Gradually increasing                          | Actual time might shift due to API call        |
+| 6:00 AM    | 6500                     | Sunrise, highest temperature                  | Actual time might shift due to API call        |

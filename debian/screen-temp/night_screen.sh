@@ -29,7 +29,6 @@ set_screen_temp() {
     echo "current hour:" $current_hour
     echo "sunrise hour:" $sunrise_hour
     echo "sunset hour:" $sunset_hour
-    echo "two hours before sunrise:" $two_hours_before_sunrise
 
     if [ "$current_hour" -ge "$sunrise_hour" ] && [ "$current_hour" -lt 12 ]; then
         # From sunrise to noon - maintain highest temperature
@@ -79,10 +78,11 @@ show_about() {
         xsct $new_temp
     elif [ $res -eq 1 ]; then
         xsct 6500
-        echo "pause"
         PAUSE="true"
+        echo "pause"
     elif [ $res -eq 2 ]; then
         PAUSE="false"
+        echo "unpause"
         set_screen_temp
     elif [ $res -eq 3 ]; then
         cleanup
