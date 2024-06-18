@@ -48,7 +48,7 @@ Includes a menu tray icon and a slider to setup a custom screen resolution
 ![alt text](menuitem.png)
 
 
-## Rought time table on my locale as of 2024-06-17
+## Rough time table on my locale as of 2024-06-17
 | Time       | xsct Value (Kelvin)      | Description                                   | Note                                           |
 |------------|--------------------------|-----------------------------------------------|------------------------------------------------|
 | 4:00 AM    | 2500                     | Two hours before sunrise, start increasing    | Actual time might shift due to API call        |
