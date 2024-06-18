@@ -22,22 +22,27 @@ set_screen_temp() {
     # Convert SUNRISE and SUNSET to hours
     local sunrise_hour=$(date -d "$SUNRISE" +%H)
     local sunset_hour=$(date -d "$SUNSET" +%H)
+    local two_hours_before_sunrise=$((sunrise_hour - 2))
     sunrise_hour=$((10#$sunrise_hour))
     sunset_hour=$((10#$sunset_hour))
 
     echo "current hour:" $current_hour
     echo "sunrise hour:" $sunrise_hour
     echo "sunset hour:" $sunset_hour
+    echo "two hours before sunrise:" $two_hours_before_sunrise
 
     if [ "$current_hour" -ge "$sunrise_hour" ] && [ "$current_hour" -lt 12 ]; then
-        # From sunrise to noon - highest temperature
+        # From sunrise to noon - maintain highest temperature
         temp=6500
     elif [ "$current_hour" -ge 12 ] && [ "$current_hour" -lt "$sunset_hour" ]; then
-        # Afternoon - gradually decrease temperature
-        temp=$((6500 - (current_hour - 12) * 500))
+        # From noon to sunset - gradually decrease temperature
+        temp=$((6500 - (current_hour - 12) * ((6500 - 2500) / (sunset_hour - 12))))
+    elif [ "$current_hour" -ge "$sunset_hour" ] || [ "$current_hour" -lt "$two_hours_before_sunrise" ]; then
+        # Evening and night until 2 hours before sunrise - maintain lowest temperature (2500K)
+        temp=2500
     else
-        # Evening and night - lowest temperature
-        temp=1000
+        # 2 hours before sunrise to sunrise - gradually increase temperature
+        temp=$((2500 + (current_hour - two_hours_before_sunrise) * ((6500 - 2500) / (sunrise_hour - two_hours_before_sunrise))))
     fi
     xsct $temp
     echo "set temperature to:" $temp
@@ -58,37 +63,49 @@ trap cleanup SIGINT SIGTERM
 # Initial fetch of sunrise and sunset times
 get_sun_times
 
+PAUSE="false"
+
 # Function to display the About message with a slider and Quit option
 show_about() {
     current_temp=$(xsct | grep -oP '(?<=temperature ~ )\d+')
-    yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100 \
+    response=$(yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100 \
         --title="About Screen Temperature Adjuster" \
         --text="Created by Fonzi Vazquez\nLatitude: $LAT\nLongitude: $LNG\nhttps://fonzi.xyz\nGPL-3.0 license" \
-        --button="Set:0" --button="Quit:1"
+        --button="Set:0" --button="Pause:1" --button="Resume:2" --button="Quit:3")
     
-    response=$?
-    if [ $response -eq 0 ]; then
-        new_temp=$(yad --scale --value=$current_temp --min-value=1000 --max-value=6500 --step=100)
+    res=$?
+    if [ $res -eq 0 ]; then
+        new_temp=$(echo "$response" | cut -d '|' -f 1)
         xsct $new_temp
-    elif [ $response -eq 1 ]; then
+    elif [ $res -eq 1 ]; then
+        xsct 6500
+        echo "pause"
+        PAUSE="true"
+    elif [ $res -eq 2 ]; then
+        PAUSE="false"
+        set_screen_temp
+    elif [ $res -eq 3 ]; then
         cleanup
     fi
 }
 
 # Export function and variables to make them available to subshells
-export -f show_about cleanup
+export -f show_about cleanup set_screen_temp get_sun_times
 export LAT
 export LNG
 export SUNRISE
 export SUNSET
+export PAUSE
 
 # Start the YAD notification icon
 yad --notification --text="Screen Temperature Adjuster" --image="dialog-information" --command="bash -c 'show_about'" &
 YAD_PID=$!
 
-# Run the script in an infinite loop, updating every 2 hours
+# Run the script in an infinite loop, updating every hour
 while true; do
-    set_screen_temp
+    if [ "$PAUSE" != "true" ]; then
+        set_screen_temp
+    fi
 
     sleep 3600  # Sleep for 1 hour
 
