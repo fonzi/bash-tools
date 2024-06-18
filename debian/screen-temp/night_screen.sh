@@ -76,7 +76,7 @@ export SUNRISE
 export SUNSET
 
 # Start the YAD notification icon
-yad --notification --text="Screen Temperature Adjuster" --image="bulb.png" --command="bash -c 'show_about'" &
+yad --notification --text="Screen Temperature Adjuster" --image="dialog-information" --command="bash -c 'show_about'" &
 YAD_PID=$!
 
 # Run the script in an infinite loop, updating every 2 hours
